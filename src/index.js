@@ -12,6 +12,9 @@ class App extends React.Component {
 
         console.log(cats.controlled)
         console.log(cats.uncontrolled)
+        return document.getElementById('myOutput').innerHTML =
+            `<p> First Name: ${cats.controlled}</p>
+            <p> Last Name: ${cats.uncontrolled} </p>`
     }
 
     render() {
@@ -21,15 +24,24 @@ class App extends React.Component {
 
                 <Form
                     onSubmit={this.getData.bind(this)}
-                    validate={validate}
-                    render={({ handleSubmit, pristine, invalid }) => (
+                    validate={values => {
+                        const errors = {};
+                        if (!values.controlled) {
+                            errors.controlled = "Required"
+                        }
+                        if (!values.uncontrolled) {
+                            errors.uncontrolled = "Required"
+                        }
+                        return errors
+                    }}
+                    render={({ handleSubmit, pristine, invalid, values }) => (
                         <form onSubmit={handleSubmit}>
 
                             <Field
                                 name="controlled"
                                 render={({ input, meta }) => (
 
-                                    // console.log(input)
+
                                     <div>
                                         <label>Controlled Input</label>
                                         <input
@@ -37,8 +49,11 @@ class App extends React.Component {
                                             placeholder="First Name"
                                         />
                                         {meta.touched && meta.error && <span>{meta.error}</span>}
+                                        {/* {console.log(meta)} */}
                                     </div>
+
                                 )}
+
                             />
                             <Field
                                 name="uncontrolled"
@@ -56,22 +71,17 @@ class App extends React.Component {
                                 )}
                             />
 
-                            <button> Get Data</button>
+                            <button type="submit"> Get Data</button>
                         </form>
                     )}
-
                 />
+
+                <div id="myOutput">Your input will Appear here</div>
             </div>
         )
 
     }
 
 }
-
-
-
-
-
-
 
 ReactDOM.render(<App />, document.getElementById('root'))
